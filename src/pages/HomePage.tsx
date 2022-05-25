@@ -12,6 +12,7 @@ const HomePage = () => {
 
 
     const {isAuth, email} = useAuth();
+    console.log(email)
 
     return isAuth ? (
         <div>

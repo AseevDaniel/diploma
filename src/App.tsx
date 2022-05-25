@@ -3,32 +3,22 @@ import {Switch, Route, useLocation} from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import {collection, getDocs, getFirestore} from "firebase/firestore";
-import {app } from 'firebase'
 import {useEffect} from "react";
-const db = getFirestore(app)
+import {getData} from "./services/firebaseDataService";
 
-const getData = async  () => {
-    try {
-        const querySnapshot = await getDocs(collection(db, "sessions"));
-        querySnapshot.forEach((doc) => {
-            console.log(new Date(doc.data().time.seconds * 1000))
-        });
-    }
-    catch(error) {
-        alert(error)
-    }
-
-
+const getSession = async () => {
+    const data = await getData('sessions')
+    data.forEach((doc) => {
+        console.log(new Date(doc.data().time.seconds * 1000))
+    });
 }
-
 
 
 function App() {
     const location = useLocation();
 
     useEffect(() => {
-        getData()
+        getSession()
     }, [location.pathname])
 
   return (
