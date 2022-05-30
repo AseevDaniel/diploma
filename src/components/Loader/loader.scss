@@ -1,0 +1,87 @@
+
+$borderDuration: 3.2s;
+$duration: .8s;
+
+@mixin loaderSizes($size) {
+  width: $size;
+  height: $size;
+  .loader {
+    div{
+      width: $size;
+      height: $size;
+      border: calc(#{$size} / 7) solid;
+      border-color: blue transparent transparent transparent;
+    }
+  }
+}
+.loaderWrapper{
+  @include loaderSizes(64px);
+  .loader {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: center center;
+    animation: loader $duration linear infinite;
+    height: 100%;
+    width: 100%;
+    div {
+      display: block;
+      position: absolute;
+      border-radius: 50%;
+      transform-origin: center center;
+      @for $i from 2 through 5 {
+        &:nth-child(#{$i - 1}) {
+          animation: loader#{$i - 1} $borderDuration linear infinite;
+        }
+      }
+    }
+  }
+}
+
+
+@keyframes loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@for $i from 1 through 5 {
+  @keyframes loader#{$i} {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(($i - 1) * 72deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.s {
+  @include loaderSizes(32px);
+}
+
+.m {
+  @include loaderSizes(48px);
+}
+
+.l {
+  @include loaderSizes(64px);
+}
+
+.xl {
+  @include loaderSizes(72px);
+}
+
+.centeredLoader {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+}

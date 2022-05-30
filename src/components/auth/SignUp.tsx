@@ -1,17 +1,16 @@
 import {useHistory} from 'react-router-dom';
-
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
 import {Form} from './Form';
-import {setUser} from '../store/slices/userSlice';
-import { useAppDispatch } from '../hooks/reduxHooks';
+import {setUser} from '../../store/slices/userSlice';
+import { useAppDispatch } from '../../hooks/reduxHooks';
 
-const Login = () => {
+const SignUp = () => {
     const dispatch = useAppDispatch();
     const {push} = useHistory();
-    
-    const handleLogin = (email: string, password: string) => {
+
+    const handleRegister = (email: string, password: string) => {
         const auth = getAuth();
-        signInWithEmailAndPassword(auth, email, password)
+        createUserWithEmailAndPassword(auth, email, password)
             .then(({user}) => {
                 console.log(user);
                 dispatch(setUser({
@@ -21,15 +20,15 @@ const Login = () => {
                 }));
                 push('/');
             })
-            .catch(() => alert('Invalid user!'))
+            .catch(console.error)
     }
 
     return (
         <Form
-            title="sign in"
-            handleClick={handleLogin}
+            title="register"
+            handleClick={handleRegister}
         />
     )
 }
 
-export {Login}
+export {SignUp}
