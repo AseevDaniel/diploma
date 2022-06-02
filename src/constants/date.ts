@@ -1,0 +1,4 @@
+
+export enum DATE_FORMATS {
+    DEFAULT_DATE_TIME = 'YYYY-MM-DDTHH:MM:SS'
+}

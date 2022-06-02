@@ -1,7 +1,7 @@
 import { SignUp } from 'components/auth/SignUp';
 import { Link } from 'react-router-dom';
 
-const RegisterPage = () => {
+export const RegisterPage = () => {
     return (
         <div>
             <h1>Register</h1>
@@ -12,5 +12,3 @@ const RegisterPage = () => {
         </div>
     )
 }
-
-export default RegisterPage

@@ -1,0 +1,33 @@
+.modal-mask{
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  background: black;
+  opacity: 0.3;
+  z-index: 999;
+}
+
+.modal{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 300px;
+  width: 500px;
+  z-index: 9999;
+  background: white;
+  &-small {
+    height: 400px;
+    width: 600px;
+  }
+  &-medium {
+    height: 500px;
+    width: 800px;
+  }
+  &-large {
+    height: 600px;
+    width: 1000px;
+  }
+}

@@ -1,16 +1,24 @@
 import React, {useState} from "react";
 import {SubmitHandler, useForm} from "react-hook-form";
-import {Session} from "../interfaces/session";
+import {Session} from "../interfaces/Session";
 import {createSession} from "../services/sessionService";
-import {Nullable} from "../interfaces/helperInterfaces";
-import {RequestStatuses} from "../interfaces/requestStatus";
+import {Nullable} from "../interfaces/HelperInterfaces";
 import {Loader} from "./Loader/Loader";
+import {RequestStatuses} from "../interfaces/RequestStatus";
+import moment from "moment";
+import {DATE_FORMATS} from "../constants/date";
+
 
 interface CreateSessionProps {
-
+    onCreate: () => void
 }
 
-export const CreateSession: React.FC<CreateSessionProps> = () => {
+
+const getDefaultDate = (isEnd = false) => {
+    return moment().add(isEnd ? 2 : 1, 'hour').format(DATE_FORMATS.DEFAULT_DATE_TIME)
+}
+
+export const CreateSession: React.FC<CreateSessionProps> = ({onCreate}) => {
     const { register, handleSubmit, formState: { errors } } = useForm<Session>();
 
     const [reqStatus, setReqStatus] = useState<Nullable<RequestStatuses>>(null)
@@ -22,6 +30,7 @@ export const CreateSession: React.FC<CreateSessionProps> = () => {
         try {
             await createSession(data)
             setReqStatus(RequestStatuses.SUCCESS)
+            onCreate()
         }
         catch (err){
             alert(err)
@@ -46,12 +55,12 @@ export const CreateSession: React.FC<CreateSessionProps> = () => {
                 <br/>
 
                 <p>startDate</p>
-                <input defaultValue="2022-06-13T12:30:00" {...register("startDate", { required: true })} />
+                <input defaultValue={getDefaultDate()} {...register("startDate", { required: true })} />
                 {errors.startDate && <span>This field is required</span>}
                 <br/>
 
                 <p>endDate</p>
-                <input defaultValue="2022-06-13T13:00:00" {...register("endDate", { required: true })} />
+                <input defaultValue={getDefaultDate(true)} {...register("endDate", { required: true })} />
 
                 {errors.endDate && <span>This field is required</span>}
                 <br/>

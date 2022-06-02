@@ -1,7 +1,7 @@
 import { Login } from 'components/auth/Login';
 import { Link } from 'react-router-dom';
 
-const LoginPage = () => {
+export const LoginPage = () => {
     return (
         <div>
             <h1>Login</h1>
@@ -13,4 +13,3 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage
