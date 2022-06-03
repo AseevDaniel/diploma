@@ -1,11 +1,11 @@
-import {FC, useState} from 'react';
+import React, {useState} from 'react';
 
 interface FormProps {
     title: string;
     handleClick: (email: string, pass: string) => void;
 }
 
-const Form: FC<FormProps> = ({title, handleClick}) => {
+const Form: React.FC<FormProps> = ({title, handleClick}) => {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
 

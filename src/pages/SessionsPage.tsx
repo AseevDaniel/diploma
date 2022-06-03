@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from "react";
-// import {useAppDispatch} from "../hooks/reduxHooks";
-// import {Redirect, useLocation} from "react-router-dom";
-// import {useAuth} from "../hooks/useAuth";
 import {CreateSession} from "../components/CreateSession";
-// import {removeUser} from "../store/slices/userSlice";
 import {getSessions} from "../services/sessionService";
 import {Session} from "../interfaces/Session";
 import {Modal} from "../components/Modal/Modal";
+import {getUserData} from "../services/userService";
+import {useAuth} from "../hooks/useAuth";
 
 
 
@@ -15,9 +13,6 @@ export const SessionsPage: React.FC = () => {
 
     const [sessions, setSessions] = useState<Session[]>([])
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-
-    // const dispatch = useAppDispatch();
-    // const location = useLocation();
 
     const getSession = async () => {
         const data = await getSessions()

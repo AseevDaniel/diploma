@@ -11,8 +11,6 @@ import { persistStore } from 'redux-persist'
 
 let persistor = persistStore(store);
 
-
-
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>

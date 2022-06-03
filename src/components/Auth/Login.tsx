@@ -1,3 +1,4 @@
+import React from 'react';
 import {useHistory} from 'react-router-dom';
 
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -5,7 +6,7 @@ import {Form} from './Form';
 import {setUser} from '../../store/slices/userSlice';
 import { useAppDispatch } from '../../hooks/reduxHooks';
 
-const Login = () => {
+const Login: React.FC = () => {
     const dispatch = useAppDispatch();
     const {push} = useHistory();
     

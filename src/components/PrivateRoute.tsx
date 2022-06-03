@@ -9,7 +9,6 @@ import {useAuth} from "../hooks/useAuth";
 const REDIRECT_PATH = '/login'
 
 interface PrivateRouteProps extends RouteProps {
-    // tslint:disable-next-line:no-any
     component: any;
 }
 

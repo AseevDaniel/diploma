@@ -4,8 +4,6 @@ import {Session} from "../interfaces/Session";
 const COLLECTION_NAME = 'sessions'
 
 
-
-
 export const getSessions = async (): Promise<Session[]> => {
     const sessionsSnapshot = await getData(COLLECTION_NAME)
     const sessions: Session[] = []
