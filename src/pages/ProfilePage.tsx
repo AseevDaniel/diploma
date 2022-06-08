@@ -1,44 +1,59 @@
-import React, {useEffect} from "react";
-import {useAuth} from "../hooks/useAuth";
-import {getUserData, writeUserData} from "../services/userService";
-import {User} from "../interfaces/User";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { getUserData, writeUserData } from "../services/userService";
+import { User } from "../interfaces/User";
+import { Loader } from "../components/Loader/Loader";
 
-interface ProfilePageProps {
-
-}
+interface ProfilePageProps {}
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
+  const { id, email } = useAuth();
+  const [userData, setUserData] = useState<User>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const {id, email} = useAuth()
+  const onGet = (data: any) => {
+    setUserData(data);
+  };
 
-    const onGet = (data: any) => {
-        console.log(data as User)
+  const setData = async () => {
+    if (email && id) {
+      const a = await writeUserData({
+        email,
+        uid: id,
+        name: "danya",
+        phone: "0974911716",
+      });
+      console.log(a);
     }
+  };
 
-    const setData = async () => {
-        if(email && id){
-            const a = await writeUserData({
-                email,
-                uid: id,
-                name: 'danya',
-                phone: '0974911716'
-            })
-            console.log(a)
-        }
+  const getValue = async () => {
+    console.log(id);
+    if (id) {
+      setIsLoading(true);
+      const a = await getUserData(id, onGet);
+      setIsLoading(false);
     }
+  };
 
-    const getValue = async () => {
-        console.log(id)
-        if(id){
-            const a = await getUserData(id, onGet)
-        }
-    }
+  useEffect(() => {
+    getValue();
+  }, []);
 
-    useEffect(() => {
+  return (
+    <>
+      <button onClick={setData}>click</button>
 
-        getValue()
-    }, [])
-    return <>
-        <button onClick={setData}>click</button>
+      {userData &&
+        !isLoading &&
+        Object.keys(userData).map((el, index) => {
+          return (
+            <p key={el + index}>
+              {el}: {userData[el as keyof User]}
+            </p>
+          );
+        })}
+      {isLoading && <Loader />}
     </>
-}
+  );
+};

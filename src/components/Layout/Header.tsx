@@ -1,10 +1,16 @@
 import React from "react";
-import './header.scss'
+import "./header.scss";
+import { Menu } from "./Menu";
+import { ProfileSection } from "./ProfileSection";
 
-interface HeaderProps {
-
-}
+interface HeaderProps {}
 
 export const Header: React.FC<HeaderProps> = ({}) => {
-    return <div className="header">lol</div>
-}
+  return (
+    <div className="header">
+      <div className="title">Aseev</div>
+      <Menu />
+      <ProfileSection />
+    </div>
+  );
+};

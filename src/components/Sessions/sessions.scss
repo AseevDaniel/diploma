@@ -1,3 +1,217 @@
-.sissions{
+@import 'src/style/colors';
+@import 'src/style/mixins';
 
+.calendarWrapper {
+  position: relative;
+}
+.timeslotSelector {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  .calendar {
+    margin-top: 30px;
+    width: min(1000px, 80%);
+    &__monthSelect {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+      span {
+        margin: 0 20px;
+        text-align: center;
+        width: 110px;
+        white-space: nowrap;
+        @include font-roboto(medium);
+      }
+      .arrowButton {
+        background: $lightAzureRadiance;
+        padding: 6px 9px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .icon {
+          &:before {
+            color: $accentPrimary;
+          }
+        }
+        &:disabled {
+          cursor: default;
+          background: $disabledBg;
+          color: $disabledColor;
+          .icon {
+            &:before {
+              color: $disabledColor;
+            }
+          }
+        }
+      }
+    }
+    &__grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.8rem;
+    }
+    &__head {
+      margin-bottom: 16px;
+      @include font-roboto(null, 16px, $mediumGrey);
+      span {
+        text-align: center;
+      }
+    }
+    &__day {
+      position: relative;
+      padding: 12px 0;
+      border-radius: 6px;
+      box-shadow: $tabsBoxShadow;
+      min-height: 40px;
+      transition: 0.3s;
+      background: $white;
+      user-select: none;
+      font-size: 14px;
+      &:not(&--selected):hover {
+        cursor: pointer;
+        background: $accentSecondary;
+      }
+      span {
+        position: absolute;
+        right: 8px;
+        top: 4px;
+        @include font-roboto(medium, 20px, $darkBlue, 20px);
+      }
+      p {
+        position: absolute;
+        left: 5px;
+        bottom: 8px;
+        margin: 0;
+        @include font-roboto(regular, 14px, $mediumGrey);
+      }
+      .unavailableIcon {
+        font-size: 7px;
+        color: $mediumGrey;
+        margin-left: 5px;
+        margin-bottom: 4px;
+      }
+      &--active {
+        span {
+          &::after {
+            content: '';
+            display: block;
+            height: 4px;
+            width: 4px;
+            border-radius: 50%;
+            background: $accentPrimary;
+            margin-left: 50%;
+            transform: translateX(-50%);
+          }
+        }
+      }
+
+      &--disabled {
+        color: $disabledColor;
+        background: repeating-linear-gradient(-45deg, $tableBg, $tableBg 1px, $white 1px, $white 7px);
+        pointer-events: none;
+      }
+      &--unavailable {
+        background: $tableBg;
+        span {
+          color: $tableDisableBg;
+        }
+      }
+
+      &--selected {
+        background: $accentPrimary;
+        &:hover {
+          cursor: pointer;
+          background: $hoverColor;
+        }
+        span {
+          color: $white;
+          &::after {
+            background: $white;
+          }
+        }
+        p {
+          color: $white;
+        }
+        .unavailableIcon {
+          color: $white;
+        }
+      }
+      &--pastDate {
+        background: $tableBg;
+        pointer-events: none;
+        span {
+          color: $tableDisableBg;
+        }
+      }
+      &--allDisabled {
+        background: $disabledBg;
+        color: $disabledColor;
+        pointer-events: none;
+        &.calendar__day--selected {
+          background: $disabledColor;
+        }
+        &.calendar__day--disabled {
+          background: repeating-linear-gradient(-45deg, $tableBg, $tableBg 1px, $disabledBg 1px, $disabledBg 7px);
+        }
+      }
+    }
+  }
+
+  .timeslotsWrapper {
+    margin-top: 20px;
+    .title {
+      display: grid;
+      align-items: center;
+      grid-template-columns: repeat(3, 1fr);
+      h4 {
+        justify-self: center;
+        @include font-roboto(medium, 14px, $darkBlue);
+      }
+    }
+
+    .timeslots {
+      margin-top: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      &__item {
+        padding: 7px 12px;
+        border-radius: 6px;
+        border: 1px solid $borderColor;
+        background: $white;
+        transition: 0.3s;
+        margin-right: 12px;
+        margin-bottom: 12px;
+        &:hover {
+          cursor: pointer;
+          background: $accentSecondary;
+        }
+        &--selected {
+          background: $accentPrimary;
+          border: 1px solid $accentPrimary;
+          color: $white;
+          &:hover {
+            border: 1px solid $hoverColor;
+            background: $hoverColor;
+          }
+        }
+        &--unavailable {
+          border: 1px dashed $disabledColor;
+        }
+        &--disabled {
+          background: $disabledBg;
+          color: $disabledColor;
+          border: 1px solid $disabledBg;
+          pointer-events: none;
+          &.timeslots__item--selected {
+            background: $disabledColor;
+            border: 1px solid $disabledColor;
+            color: $white;
+          }
+        }
+      }
+    }
+  }
 }

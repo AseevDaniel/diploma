@@ -1,0 +1,32 @@
+@mixin _font-regular {
+  font-family: RobotoRegular, sans-serif;
+}
+@mixin _font-medium {
+  font-family: RobotoMedium, sans-serif;
+}
+@mixin _font-bold {
+  font-family: RobotoBold, sans-serif;
+}
+
+@mixin font-roboto($weight: false, $size: false, $colour: false, $lh: false, $ls: false) {
+  @if $weight == bold {
+    @include _font-bold;
+  } @else if $weight == medium {
+    @include _font-medium;
+  } @else {
+    @include _font-regular;
+  }
+
+  @if $size {
+    font-size: $size;
+  }
+  @if $colour {
+    color: $colour;
+  }
+  @if $lh {
+    line-height: $lh;
+  }
+  @if $ls {
+    letter-spacing: $ls;
+  }
+}
