@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { CreateSession } from "../components/CreateSession";
-import { getSessions } from "../services/sessionService";
-import { Session } from "../interfaces/Session";
-import { Modal } from "../components/Modal/Modal";
-import { getUserData } from "../services/userService";
-import { useAuth } from "../hooks/useAuth";
-import { Sessions } from "../components/Sessions/Sessions";
+import { CreateSession } from "./components/CreateSession";
+import { getSessions } from "../../services/sessionService";
+import { Session } from "../../interfaces/Session";
+import { Modal } from "../../components/Modal/Modal";
+import { getUserData } from "../../services/userService";
+import { useAuth } from "../../hooks/useAuth";
+import { Sessions } from "./components/Sessions/Sessions";
 import moment, { Moment } from "moment";
+import { Filters } from "./components/Filters";
 
 export const SessionsPage: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -34,6 +35,8 @@ export const SessionsPage: React.FC = () => {
           <CreateSession onCreate={onSessionCreate} />
         </Modal>
       )}
+
+      <Filters />
 
       <Sessions
         sessions={sessions}

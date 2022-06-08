@@ -1,5 +1,5 @@
 import moment, { Moment } from "moment";
-import { Session } from "../../interfaces/Session";
+import { Session } from "../../../../interfaces/Session";
 
 export interface CalendarDay {
   value: Moment;

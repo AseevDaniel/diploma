@@ -18,3 +18,7 @@ export interface UserWithData {
   phone?: phone;
   address?: address;
 }
+
+export interface UsersAll {
+  [key: string]: UserWithData;
+}

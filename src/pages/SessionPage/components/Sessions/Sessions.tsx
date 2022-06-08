@@ -12,7 +12,7 @@ import {
   TimeslotTags,
   WeekDays,
 } from "./components";
-import { Session } from "../../interfaces/Session";
+import { Session } from "../../../../interfaces/Session";
 
 interface SessionsProps {
   sessions: Session[];

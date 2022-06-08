@@ -3,7 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
-import { SessionsPage } from "./pages/SessionsPage";
+import { SessionsPage } from "./pages/SessionPage/SessionsPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import React from "react";
 import { PrivateRoute } from "./components/PrivateRoute";

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Session } from "../interfaces/Session";
-import { createSession } from "../services/sessionService";
-import { Nullable } from "../interfaces/HelperInterfaces";
-import { Loader } from "./Loader/Loader";
-import { RequestStatuses } from "../interfaces/RequestStatus";
-import { getDefaultDate } from "../helpers/sessionHelper";
-import { useAuth } from "../hooks/useAuth";
+import { Session } from "../../../interfaces/Session";
+import { createSession } from "../../../services/sessionService";
+import { Nullable } from "../../../interfaces/HelperInterfaces";
+import { Loader } from "../../../components/Loader/Loader";
+import { RequestStatuses } from "../../../interfaces/RequestStatus";
+import { getDefaultDate } from "../../../helpers/sessionHelper";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface CreateSessionProps {
   onCreate: () => void;
