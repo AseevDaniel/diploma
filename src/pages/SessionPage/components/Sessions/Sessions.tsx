@@ -13,6 +13,7 @@ import {
   WeekDays,
 } from "./components";
 import { Session } from "../../../../interfaces/Session";
+import { CurrentSession } from "./components/CurrentSession";
 
 interface SessionsProps {
   sessions: Session[];
@@ -39,6 +40,10 @@ export const Sessions: React.FC<SessionsProps> = ({
     setCurrentCalendarDay(day);
     setCurrentDate(moment(day.value));
   };
+
+  useEffect(() => {
+    console.log(currentSession);
+  }, [currentSession]);
 
   useEffect(() => {
     setCurrentSession(undefined);
@@ -79,6 +84,8 @@ export const Sessions: React.FC<SessionsProps> = ({
         isOnlyFreeSlots={false}
         setIsOnlyFreeSlots={() => {}}
       />
+
+      {currentSession && <CurrentSession session={currentSession} />}
     </div>
   );
 };

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { CreateSession } from "./components/CreateSession";
+import { CreateSession } from "./components/CreateSession/CreateSession";
 import { getSessions } from "../../services/sessionService";
 import { Session } from "../../interfaces/Session";
 import { Modal } from "../../components/Modal/Modal";
-import { getUserData } from "../../services/userService";
-import { useAuth } from "../../hooks/useAuth";
 import { Sessions } from "./components/Sessions/Sessions";
 import moment, { Moment } from "moment";
 import { Filters } from "./components/Filters";
+import { getUsersByFilters } from "../../helpers/userHelpers";
 
 export const SessionsPage: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -21,6 +20,7 @@ export const SessionsPage: React.FC = () => {
 
   useEffect(() => {
     getSession();
+    getUsersByFilters({});
   }, []);
 
   const onSessionCreate = () => {
@@ -31,10 +31,14 @@ export const SessionsPage: React.FC = () => {
   return (
     <div>
       {isCreateModalOpen && (
-        <Modal onClose={() => setIsCreateModalOpen(false)}>
+        <Modal
+          onClose={() => setIsCreateModalOpen(false)}
+          title="Create Session"
+        >
           <CreateSession onCreate={onSessionCreate} />
         </Modal>
       )}
+      <button onClick={() => setIsCreateModalOpen(true)}>Create session</button>
 
       <Filters />
 
@@ -43,8 +47,6 @@ export const SessionsPage: React.FC = () => {
         currentDate={currentDate}
         setCurrentDate={setCurrentDate}
       />
-
-      <button onClick={() => setIsCreateModalOpen(true)}>Create session</button>
     </div>
   );
 };

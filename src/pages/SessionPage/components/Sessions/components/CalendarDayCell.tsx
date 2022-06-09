@@ -45,7 +45,7 @@ export const CalendarDayCell: React.FC<CalendarDayCellProps> = ({
       );
 
     if (day.timeslots.every((timeslot) => !timeslot.isAvailable))
-      return <p>No available</p>;
+      return <p>No available slots</p>;
   };
 
   return (

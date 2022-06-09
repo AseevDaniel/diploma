@@ -15,6 +15,7 @@ export const getData = async (collectionName: string) => {
 };
 
 export const postData = async <T>(collectionName: string, data: T) => {
+  console.log(data);
   try {
     await addDoc(collection(db, collectionName), data);
   } catch (err) {

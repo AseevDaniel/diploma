@@ -199,6 +199,8 @@
         }
         &--unavailable {
           border: 1px dashed $disabledColor;
+          pointer-events: none;
+          background: repeating-linear-gradient(-45deg, $tableBg, $tableBg 1px, $disabledBg 1px, $disabledBg 7px);
         }
         &--disabled {
           background: $disabledBg;
@@ -211,6 +213,14 @@
             color: $white;
           }
         }
+      }
+    }
+  }
+
+  .currentSession{
+    .sessionField{
+      p{
+
       }
     }
   }
