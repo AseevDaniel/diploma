@@ -9,7 +9,6 @@ interface FormProps {
 }
 
 const Form: React.FC<FormProps> = ({ handleClick, isRegister = false }) => {
-  const title = isRegister ? "Register" : "Login";
   const {
     getValues,
     register,

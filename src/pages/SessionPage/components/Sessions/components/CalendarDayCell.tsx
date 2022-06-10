@@ -37,10 +37,7 @@ export const CalendarDayCell: React.FC<CalendarDayCellProps> = ({
     if (!day.timeslots?.length)
       return (
         <>
-          {/*<div className="unavailableIcon">*/}
-          {/*  <i className="icon icon-day-off-icon" />*/}
-          {/*</div>*/}
-          <p>Day off</p>
+          <p>No slots</p>
         </>
       );
 

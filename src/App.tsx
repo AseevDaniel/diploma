@@ -5,13 +5,26 @@ import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { SessionsPage } from "./pages/SessionPage/SessionsPage";
 import { ProfilePage } from "./pages/ProfilePage";
-import React from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Header } from "./components/Layout/Header";
+import { UserWithData } from "./interfaces/User";
+import { getUserData } from "./services/userService";
+import { useAuth } from "./hooks/useAuth";
+import { Nullable } from "./interfaces/HelperInterfaces";
+
+export const AuthContext = createContext<Nullable<UserWithData>>(null);
 
 function App() {
+  const { id } = useAuth();
+  const [userData, setUserData] = useState<Nullable<UserWithData>>(null);
+
+  useEffect(() => {
+    id ? getUserData(id, setUserData) : setUserData(null);
+  }, [id]);
+
   return (
-    <>
+    <AuthContext.Provider value={userData}>
       <Header />
 
       <div className="content">
@@ -28,7 +41,7 @@ function App() {
           <Route exact path="/register" component={RegisterPage} />
         </Switch>
       </div>
-    </>
+    </AuthContext.Provider>
   );
 }
 

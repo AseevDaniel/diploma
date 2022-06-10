@@ -1,17 +1,20 @@
 import React from "react";
 import "./modal.scss";
+import { Loader } from "../Loader/Loader";
 
 type Sizes = "small" | "medium" | "large";
 
 interface ModalProps {
   onClose: () => void;
+  isLoading?: boolean;
   title?: string;
   size?: Sizes;
 }
 
 export const Modal: React.FC<ModalProps> = ({
-  title,
   onClose,
+  title,
+  isLoading,
   size = "small",
   children,
 }) => {
@@ -21,11 +24,17 @@ export const Modal: React.FC<ModalProps> = ({
     <>
       <div className="modal-mask" />
       <div className={modalClasses}>
-        {title && <h1 className="title">{title}</h1>}
-        <span className="close-icon" onClick={onClose}>
-          +
-        </span>
-        {children}
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <>
+            {title && <h1 className="title">{title}</h1>}
+            <span className="close-icon" onClick={onClose}>
+              +
+            </span>
+            {children}
+          </>
+        )}
       </div>
     </>
   );

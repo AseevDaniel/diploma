@@ -1,59 +1,109 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { getUserData, writeUserData } from "../services/userService";
-import { User } from "../interfaces/User";
 import { Loader } from "../components/Loader/Loader";
+import { useForm } from "react-hook-form";
+import { User, UserRoles, UserWithData } from "../interfaces/User";
+import { Modal } from "../components/Modal/Modal";
+import { Form } from "../components/Auth/Form";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { AuthContext } from "../App";
 
 interface ProfilePageProps {}
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
-  const { id, email } = useAuth();
-  const [userData, setUserData] = useState<User>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { register, handleSubmit } = useForm<UserWithData>();
+  const user = useContext(AuthContext);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isUserDataLoading, setIsUserDataLoading] = useState<boolean>(false);
+  const [isCreatingLoading, setCreatingLoading] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const onGet = (data: any) => {
-    setUserData(data);
+  const isAdmin = user?.role === UserRoles.ADMIN;
+
+  const onSubmit = async (data: UserWithData) => {
+    try {
+      if (user?.email && user.uid) {
+        setIsUserDataLoading(true);
+        await writeUserData({ ...user, ...data });
+        setIsUserDataLoading(false);
+        setIsEditing(false);
+      }
+    } catch (err) {
+      alert(err);
+    }
   };
 
-  const setData = async () => {
-    if (email && id) {
-      const a = await writeUserData({
-        email,
-        uid: id,
-        name: "danya",
-        phone: "0974911716",
+  const onNewStoreCreate = (data: User) => {
+    const auth = getAuth();
+    setCreatingLoading(true);
+    createUserWithEmailAndPassword(auth, data.email, data.password)
+      .then(({ user }) => {
+        console.log(user);
+
+        writeUserData({
+          email: user.email!,
+          uid: user.uid,
+          role: "store",
+        });
+
+        alert("New store successfully created");
+      })
+      .catch(console.error)
+      .finally(() => {
+        setIsCreateModalOpen(false);
+        setCreatingLoading(false);
       });
-      console.log(a);
-    }
   };
 
-  const getValue = async () => {
-    console.log(id);
-    if (id) {
-      setIsLoading(true);
-      const a = await getUserData(id, onGet);
-      setIsLoading(false);
-    }
-  };
+  const getCurrentDataDisplay = () => {
+    if (!user) return <></>;
 
-  useEffect(() => {
-    getValue();
-  }, []);
+    return isEditing ? (
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="field">
+          <p>Name:</p>
+          <input {...register("name")} defaultValue={user.name} />
+        </div>
+        <div className="field">
+          <p>Phone:</p>
+          <input {...register("phone")} defaultValue={user.phone} />
+        </div>
+        <input className="submitButton" type="submit" />
+      </form>
+    ) : (
+      <div className="profileInfo">
+        <p>Email: {user.email}</p>
+        <p>Name: {user.name}</p>
+        <p>Phone: {user.phone}</p>
+        <p>Role: {user.role}</p>
+      </div>
+    );
+  };
 
   return (
     <>
-      <button onClick={setData}>click</button>
+      <button onClick={() => setIsEditing(!isEditing)}>
+        {isEditing ? "Cancel editing" : "Change info"}
+      </button>
 
-      {userData &&
-        !isLoading &&
-        Object.keys(userData).map((el, index) => {
-          return (
-            <p key={el + index}>
-              {el}: {userData[el as keyof User]}
-            </p>
-          );
-        })}
-      {isLoading && <Loader />}
+      {isUserDataLoading ? <Loader /> : getCurrentDataDisplay()}
+
+      {isAdmin && (
+        <>
+          <button onClick={() => setIsCreateModalOpen(true)}>
+            Create new store
+          </button>
+          {isCreateModalOpen && (
+            <Modal
+              isLoading={isCreatingLoading}
+              onClose={() => setIsCreateModalOpen(false)}
+            >
+              <Form handleClick={onNewStoreCreate} />
+            </Modal>
+          )}
+        </>
+      )}
     </>
   );
 };

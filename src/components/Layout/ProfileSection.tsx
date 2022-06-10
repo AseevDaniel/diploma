@@ -1,19 +1,25 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useAppDispatch } from "../../hooks/reduxHooks";
 import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
 import { removeUser } from "../../store/slices/userSlice";
+import { getUserData } from "../../services/userService";
+import { UserRoles, UserWithData } from "../../interfaces/User";
+import { AuthContext } from "../../App";
 
 interface ProfileSectionProps {}
 
 export const ProfileSection: React.FC<ProfileSectionProps> = ({}) => {
   const dispatch = useAppDispatch();
+  const userData = useContext(AuthContext);
 
-  const { email, isAuth } = useAuth();
+  useEffect(() => {
+    console.log(userData);
+  }, [userData]);
 
   return (
     <div className="profileSection">
-      {isAuth ? (
+      {userData ? (
         <>
           <Link className="profileLink" to="/profile">
             <img
@@ -23,6 +29,12 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({}) => {
           </Link>
           <div className="authButton logout">
             <p onClick={() => dispatch(removeUser())}>Log Out</p>
+          </div>
+          <div className="authButton name">
+            <p>
+              {userData?.name || " - "}
+              <span>({userData?.role})</span>
+            </p>
           </div>
         </>
       ) : (

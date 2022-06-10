@@ -1,6 +1,7 @@
 import { getData, postData } from "./firebaseDataService";
 import { Session } from "../interfaces/Session";
 import { convertDateToDefaultFormat } from "../helpers/dateHelpers";
+import { UserWithData } from "../interfaces/User";
 
 const COLLECTION_NAME = "sessions";
 
@@ -21,4 +22,17 @@ export const createSession = (data: Session) => {
     startDate: convertDateToDefaultFormat(data.startDate),
     endDate: convertDateToDefaultFormat(data.endDate),
   });
+};
+
+export const getSessionsByOwners = async (
+  ownerUids: string[]
+): Promise<Session[]> => {
+  const sessions = await getSessions();
+  if (!ownerUids.length) return sessions;
+
+  const filteredSessions = sessions.filter(
+    (session) => session.ownerUid && ownerUids.includes(session.ownerUid)
+  );
+
+  return filteredSessions;
 };

@@ -27,6 +27,7 @@ const SignUp: React.FC = () => {
         writeUserData({
           email: user.email!,
           uid: user.uid,
+          role: "default",
         });
 
         push("/");

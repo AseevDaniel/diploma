@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { Session } from "../../../../interfaces/Session";
 import { createSession } from "../../../../services/sessionService";
@@ -10,6 +10,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import { CustomDatePicker } from "../../../../components/CustomDatePicker";
 import "./createSession.scss";
+import { getUserData } from "../../../../services/userService";
+import { UserWithData } from "../../../../interfaces/User";
+import { AuthContext } from "../../../../App";
 
 interface CreateSessionProps {
   onCreate: () => void;
@@ -23,7 +26,7 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
     formState: { errors },
     setValue,
   } = useForm<Session>();
-  const { id } = useAuth();
+  const user = useContext(AuthContext);
   const [reqStatus, setReqStatus] = useState<Nullable<RequestStatuses>>(null);
 
   const onStartDateChange = (date: Nullable<Date>) => {
@@ -34,7 +37,7 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
     setReqStatus(RequestStatuses.PENDING);
     console.log(data);
     try {
-      await createSession({ ...data, isAvailable: true, ownerUid: id! });
+      await createSession({ ...data, isAvailable: true, ownerUid: user?.uid! });
       setReqStatus(RequestStatuses.SUCCESS);
       onCreate();
     } catch (err) {
@@ -50,23 +53,26 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
       ) : (
         <>
           <div className="field">
-            <p>name</p>
-            <input {...register("name", { required: true })} />
+            <p>Name</p>
+            <input
+              defaultValue={user?.name}
+              {...register("name", { required: true })}
+            />
             {errors.name && <span>This field is required</span>}
             <br />
           </div>
 
           <div className="field">
-            <p>phone</p>
+            <p>Phone</p>
             <input
-              defaultValue="0974911716"
+              defaultValue={user?.phone}
               {...register("phone", { required: true })}
             />
             {errors.phone && <span>This field is required</span>}
           </div>
 
           <div className="field">
-            <p>startDate</p>
+            <p>Start of session</p>
             <CustomDatePicker
               name="startDate"
               control={control}
@@ -76,7 +82,7 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
           </div>
 
           <div className="field">
-            <p>endDate</p>
+            <p>End os session</p>
             <CustomDatePicker name="endDate" control={control} />
             {errors.endDate && <span>This field is required</span>}
           </div>

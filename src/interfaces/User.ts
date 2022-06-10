@@ -5,6 +5,13 @@ type phone = string;
 type address = string;
 export type userUid = string;
 
+export enum UserRoles {
+  ADMIN = "admin",
+  STORE = "store",
+  DEFAULT = "default",
+}
+export type UserRole = "admin" | "store" | "default";
+
 export interface User {
   email: email;
   password: password;
@@ -14,6 +21,7 @@ export interface User {
 export interface UserWithData {
   email: email;
   uid: userUid;
+  role: UserRole;
   name?: name;
   phone?: phone;
   address?: address;

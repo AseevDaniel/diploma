@@ -161,6 +161,7 @@
   }
 
   .timeslotsWrapper {
+    width: min(1000px, 80%);
     margin-top: 20px;
     .title {
       display: grid;
@@ -175,6 +176,7 @@
     .timeslots {
       margin-top: 15px;
       display: flex;
+      justify-content: center;
       flex-wrap: wrap;
       &__item {
         padding: 7px 12px;
