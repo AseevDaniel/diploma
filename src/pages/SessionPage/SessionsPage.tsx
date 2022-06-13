@@ -9,13 +9,17 @@ import { Filters } from "./components/Filters/Filters";
 import { SelectOption } from "../../interfaces/Select";
 import { AuthContext } from "../../App";
 import { isUserCanManageSession } from "../../helpers/userHelpers";
+import { CreateSchedule } from "./components/CreateSchedule/CreateSchedule";
 
 export const SessionsPage: React.FC = () => {
   const user = useContext(AuthContext);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [currentDate, setCurrentDate] = useState<Moment>(moment());
   const [selectedOwners, setSelectedOwners] = useState<SelectOption[]>([]);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreateSessionModalOpen, setIsCreateSessionModalOpen] =
+    useState(false);
+  const [isCreateScheduleModalOpen, setIsCreateScheduleModalOpen] =
+    useState(false);
 
   const getSession = async () => {
     const formattedOwners = selectedOwners.map(({ value }) => value);
@@ -30,23 +34,39 @@ export const SessionsPage: React.FC = () => {
 
   const onSessionCreate = () => {
     getSession();
-    setIsCreateModalOpen(false);
+    setIsCreateSessionModalOpen(false);
   };
+
+  const onScheduleCreate = () => {};
 
   return (
     <div>
-      {isCreateModalOpen && (
+      {isCreateSessionModalOpen && (
         <Modal
-          onClose={() => setIsCreateModalOpen(false)}
+          onClose={() => setIsCreateSessionModalOpen(false)}
           title="Create Session"
         >
           <CreateSession onCreate={onSessionCreate} />
         </Modal>
       )}
+
+      {isCreateScheduleModalOpen && (
+        <Modal
+          onClose={() => setIsCreateScheduleModalOpen(false)}
+          title="Create Schedule"
+        >
+          <CreateSchedule onCreate={onScheduleCreate} />
+        </Modal>
+      )}
       {isUserCanManageSession(user) && (
-        <button onClick={() => setIsCreateModalOpen(true)}>
-          Create session
-        </button>
+        <>
+          <button onClick={() => setIsCreateSessionModalOpen(true)}>
+            Create session
+          </button>
+          <button onClick={() => setIsCreateScheduleModalOpen(true)}>
+            Create schedile
+          </button>
+        </>
       )}
 
       <Filters

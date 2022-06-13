@@ -72,18 +72,32 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
           </div>
 
           <div className="field">
+            <p>Adress</p>
+            <input
+              defaultValue={user?.address}
+              {...register("address", { required: true })}
+            />
+            {errors.address && <span>This field is required</span>}
+          </div>
+
+          <div className="field">
             <p>Start of session</p>
             <CustomDatePicker
+              onChange={() => {}}
               name="startDate"
               control={control}
-              onChange={onStartDateChange}
+              onChangeData={onStartDateChange}
             />
             {errors.startDate && <span>This field is required</span>}
           </div>
 
           <div className="field">
-            <p>End os session</p>
-            <CustomDatePicker name="endDate" control={control} />
+            <p>End of session</p>
+            <CustomDatePicker
+              onChange={() => {}}
+              name="endDate"
+              control={control}
+            />
             {errors.endDate && <span>This field is required</span>}
           </div>
 

@@ -76,16 +76,18 @@ export const Sessions: React.FC<SessionsProps> = ({
         </div>
       </div>
 
-      <TimeslotTags
-        isDisabled={isDisabled}
-        currentSession={currentSession}
-        setCurrentSession={setCurrentSession}
-        timeslots={currentCalendarDay?.timeslots}
-        isOnlyFreeSlots={false}
-        setIsOnlyFreeSlots={() => {}}
-      />
+      <div className="slots">
+        <TimeslotTags
+          isDisabled={isDisabled}
+          currentSession={currentSession}
+          setCurrentSession={setCurrentSession}
+          timeslots={currentCalendarDay?.timeslots}
+          isOnlyFreeSlots={false}
+          setIsOnlyFreeSlots={() => {}}
+        />
 
-      {currentSession && <CurrentSession session={currentSession} />}
+        {currentSession && <CurrentSession session={currentSession} />}
+      </div>
     </div>
   );
 };

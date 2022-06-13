@@ -12,7 +12,7 @@
 }
 
 .modal{
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -22,6 +22,10 @@
   background: $white;
   border-radius: 20px;
   padding: 20px;
+  &-confirm {
+    min-height: 160px;
+    width: 320px;
+  }
   &-small {
     min-height: 400px;
     width: 600px;
@@ -48,5 +52,36 @@
     font-size: 40px;
     font-weight: 600;
     cursor: pointer;
+  }
+
+  .confirmModal{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    h2{
+      padding-top: 5px;
+    }
+    .controls{
+      width: 90%;
+      margin-top: 50px;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 60px;
+      button{
+        cursor: pointer;
+        background: $white;
+        font-weight: 600;
+        font-size: 24px;
+        transition: .3s;
+        &.cancel{
+          color: red;
+        }
+        &:hover{
+          transform: scale(1.05);
+        }
+      }
+    }
   }
 }

@@ -52,7 +52,7 @@ export const TimeslotTags: React.FC<TimeslotTagsProps> = ({
 
   return (
     <div className="timeslotsWrapper">
-      {filteredTimeslots?.length && (
+      {filteredTimeslots?.length ? (
         <div className="timeslots">
           {filteredTimeslots?.map((timeslot, index) => {
             return (
@@ -70,7 +70,7 @@ export const TimeslotTags: React.FC<TimeslotTagsProps> = ({
             );
           })}
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

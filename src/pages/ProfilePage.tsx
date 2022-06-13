@@ -69,6 +69,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
           <p>Phone:</p>
           <input {...register("phone")} defaultValue={user.phone} />
         </div>
+        <div className="field">
+          <p>Address:</p>
+          <input {...register("address")} defaultValue={user.address} />
+        </div>
         <input className="submitButton" type="submit" />
       </form>
     ) : (
@@ -76,6 +80,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
         <p>Email: {user.email}</p>
         <p>Name: {user.name}</p>
         <p>Phone: {user.phone}</p>
+        <p>Address: {user.address}</p>
         <p>Role: {user.role}</p>
       </div>
     );

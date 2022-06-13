@@ -2,9 +2,9 @@ import React from "react";
 import "./modal.scss";
 import { Loader } from "../Loader/Loader";
 
-type Sizes = "small" | "medium" | "large";
+type Sizes = "confirm" | "small" | "medium" | "large";
 
-interface ModalProps {
+export interface ModalProps {
   onClose: () => void;
   isLoading?: boolean;
   title?: string;

@@ -6,6 +6,7 @@ import { removeUser } from "../../store/slices/userSlice";
 import { getUserData } from "../../services/userService";
 import { UserRoles, UserWithData } from "../../interfaces/User";
 import { AuthContext } from "../../App";
+import { PROFILE_IMAGE } from "../../constants/images";
 
 interface ProfileSectionProps {}
 
@@ -13,19 +14,12 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({}) => {
   const dispatch = useAppDispatch();
   const userData = useContext(AuthContext);
 
-  useEffect(() => {
-    console.log(userData);
-  }, [userData]);
-
   return (
     <div className="profileSection">
       {userData ? (
         <>
           <Link className="profileLink" to="/profile">
-            <img
-              src="https://uxwing.com/wp-content/themes/uxwing/download/12-peoples-avatars/user-profile.png"
-              alt=""
-            />
+            <img src={PROFILE_IMAGE} alt="" />
           </Link>
           <div className="authButton logout">
             <p onClick={() => dispatch(removeUser())}>Log Out</p>
