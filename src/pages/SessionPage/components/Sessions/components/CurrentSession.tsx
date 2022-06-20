@@ -10,16 +10,64 @@ import {
 } from "../../../../../constants/images";
 import { AuthContext } from "../../../../../App";
 import { ConfirmModal } from "../../../../../components/Modal/ConfirmModal";
+import { writeUserData } from "../../../../../services/userService";
+import { Loader } from "../../../../../components/Loader/Loader";
+import { updateSession } from "../../../../../services/sessionService";
+import { Link } from "react-router-dom";
+import { UserForSession } from "../../../../../interfaces/User";
 
 interface CurrentSessionProps {
   session: Session;
+  onReserve?: () => void;
 }
 
-export const CurrentSession: React.FC<CurrentSessionProps> = ({ session }) => {
-  const { name, address, phone, endDate, startDate, isAvailable, ownerUid } =
-    session;
+export const CurrentSession: React.FC<CurrentSessionProps> = ({
+  session,
+  onReserve,
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const {
+    name,
+    address,
+    phone,
+    endDate,
+    startDate,
+    isAvailable,
+    id: sessionId,
+  } = session;
   const user = useContext(AuthContext);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const reserveSession = async () => {
+    console.log(user);
+    if (user?.uid) {
+      setIsLoading(true);
+      await writeUserData({
+        ...user,
+        sessionsAccepted: [...(user?.sessionsAccepted || []), session],
+      });
+      await onSessionReserve({
+        name: user?.name!,
+        phone: user?.phone!,
+        id: user?.uid,
+      });
+      setIsLoading(false);
+      onReserve?.();
+    } else {
+      alert("Error((( try again");
+    }
+    setIsConfirmModalOpen(false);
+  };
+
+  const onSessionReserve = async (client: UserForSession) => {
+    return await updateSession(sessionId, {
+      ...session,
+      isAvailable: false,
+      client,
+    });
+  };
+
+  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -58,16 +106,25 @@ export const CurrentSession: React.FC<CurrentSessionProps> = ({ session }) => {
           </h1>
         </div>
 
-        <div
-          onClick={() => setIsConfirmModalOpen(true)}
-          className={`bookButton ${isAvailable ? "available" : "unavailable"}`}
-        >
-          {isAvailable ? "Book a session" : "Reserved"}
-        </div>
+        {!!user ? (
+          <div
+            onClick={() => setIsConfirmModalOpen(true)}
+            className={`bookButton ${
+              isAvailable ? "available" : "unavailable"
+            }`}
+          >
+            {isAvailable ? "Book a session" : "Reserved"}
+          </div>
+        ) : (
+          <Link className="notAuth" to="/login">
+            Log in to reserve
+          </Link>
+        )}
       </div>
+
       {isConfirmModalOpen && (
         <ConfirmModal
-          onConfirm={() => console.log(user, session)}
+          onConfirm={reserveSession}
           onClose={() => setIsConfirmModalOpen(false)}
         ></ConfirmModal>
       )}

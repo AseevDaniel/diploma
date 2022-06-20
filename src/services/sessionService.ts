@@ -1,7 +1,12 @@
-import { getData, postData } from "./firebaseDataService";
-import { Session } from "../interfaces/Session";
+import {
+  getData,
+  postArrayData,
+  postData,
+  updateData,
+} from "./firebaseDataService";
+import { Session, SessionSchedue } from "../interfaces/Session";
 import { convertDateToDefaultFormat } from "../helpers/dateHelpers";
-import { UserWithData } from "../interfaces/User";
+import { getArrayOfSessions } from "../helpers/sessionHelper";
 
 const COLLECTION_NAME = "sessions";
 
@@ -10,7 +15,7 @@ export const getSessions = async (): Promise<Session[]> => {
   const sessions: Session[] = [];
 
   sessionsSnapshot.forEach((el) => {
-    sessions.push(el.data() as Session);
+    sessions.push({ ...el.data(), id: el.id } as Session);
   });
 
   return sessions;
@@ -22,6 +27,14 @@ export const createSession = (data: Session) => {
     startDate: convertDateToDefaultFormat(data.startDate),
     endDate: convertDateToDefaultFormat(data.endDate),
   });
+};
+
+export const createArraySession = (dataArray: SessionSchedue) => {
+  return postArrayData(COLLECTION_NAME, getArrayOfSessions(dataArray));
+};
+
+export const updateSession = (sessionId: string, data: Session) => {
+  return updateData(COLLECTION_NAME, sessionId, data);
 };
 
 export const getSessionsByOwners = async (

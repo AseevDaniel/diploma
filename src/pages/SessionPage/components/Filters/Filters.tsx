@@ -16,10 +16,6 @@ export const Filters: React.FC<FiltersProps> = ({
   const [users, setUsers] = useState<SelectOption[]>();
 
   useEffect(() => {
-    console.log(users);
-  }, [users]);
-
-  useEffect(() => {
     getUsersForFilters(setUsers);
   }, []);
   const onChange = (data: any) => {

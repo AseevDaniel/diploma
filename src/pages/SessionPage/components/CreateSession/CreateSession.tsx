@@ -10,7 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import { CustomDatePicker } from "../../../../components/CustomDatePicker";
 import "./createSession.scss";
-import { getUserData } from "../../../../services/userService";
+import { getUserData, writeUserData } from "../../../../services/userService";
 import { UserWithData } from "../../../../interfaces/User";
 import { AuthContext } from "../../../../App";
 
@@ -35,14 +35,25 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
 
   const onSubmit: SubmitHandler<Session> = async (data) => {
     setReqStatus(RequestStatuses.PENDING);
-    console.log(data);
-    try {
-      await createSession({ ...data, isAvailable: true, ownerUid: user?.uid! });
-      setReqStatus(RequestStatuses.SUCCESS);
-      onCreate();
-    } catch (err) {
-      alert(err);
-      setReqStatus(RequestStatuses.FAILED);
+    if (user) {
+      console.log(data);
+      try {
+        const sessionData = {
+          ...data,
+          isAvailable: true,
+          ownerUid: user?.uid!,
+        };
+        await createSession(sessionData);
+        await writeUserData({
+          ...user,
+          sessionsCreated: [...(user?.sessionsCreated || []), sessionData],
+        });
+        setReqStatus(RequestStatuses.SUCCESS);
+        onCreate();
+      } catch (err) {
+        alert(err);
+        setReqStatus(RequestStatuses.FAILED);
+      }
     }
   };
 

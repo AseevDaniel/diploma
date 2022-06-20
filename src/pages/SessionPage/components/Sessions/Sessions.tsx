@@ -19,6 +19,7 @@ interface SessionsProps {
   sessions: Session[];
   currentDate: Moment;
   setCurrentDate: (date: Moment) => void;
+  onDataUpdate?: () => void;
 }
 
 const isDisabled = false;
@@ -28,6 +29,7 @@ export const Sessions: React.FC<SessionsProps> = ({
   sessions,
   currentDate,
   setCurrentDate,
+  onDataUpdate,
 }) => {
   const [currentCalendarDay, setCurrentCalendarDay] = useState<CalendarDay>();
   const [currentSession, setCurrentSession] = useState<Session>();
@@ -42,12 +44,14 @@ export const Sessions: React.FC<SessionsProps> = ({
   };
 
   useEffect(() => {
-    console.log(currentSession);
-  }, [currentSession]);
+    setCurrentSession(undefined);
+  }, [currentDate]);
 
   useEffect(() => {
     setCurrentSession(undefined);
-  }, [currentDate]);
+    setCurrentCalendarDay(undefined);
+    setCurrentDate(moment());
+  }, [sessions]);
 
   return (
     <div className="timeslotSelector">
@@ -86,7 +90,9 @@ export const Sessions: React.FC<SessionsProps> = ({
           setIsOnlyFreeSlots={() => {}}
         />
 
-        {currentSession && <CurrentSession session={currentSession} />}
+        {currentSession && (
+          <CurrentSession onReserve={onDataUpdate} session={currentSession} />
+        )}
       </div>
     </div>
   );

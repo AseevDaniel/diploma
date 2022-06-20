@@ -1,6 +1,16 @@
-import { collection, getDocs, getFirestore, addDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  getFirestore,
+  addDoc,
+  updateDoc,
+  writeBatch,
+} from "firebase/firestore";
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { app } from "firebase";
+import { Session } from "../interfaces/Session";
+import firebase from "firebase/compat";
 const db = getFirestore(app);
 const database = getDatabase(app);
 
@@ -18,6 +28,34 @@ export const postData = async <T>(collectionName: string, data: T) => {
   console.log(data);
   try {
     await addDoc(collection(db, collectionName), data);
+  } catch (err) {
+    alert(err);
+  }
+};
+
+export const postArrayData = async <T>(collectionName: string, data: T[]) => {
+  const arrayOfPromises: Promise<Session>[] = [];
+
+  data.forEach((el) => {
+    arrayOfPromises.push(addDoc(collection(db, collectionName), el) as any);
+  });
+
+  try {
+    await Promise.all(arrayOfPromises);
+  } catch (err) {
+    alert(err);
+  }
+};
+
+export const updateData = async <T>(
+  collectionName: string,
+  documentId: string,
+  data: T
+) => {
+  console.log(data);
+
+  try {
+    await updateDoc(doc(db, collectionName, documentId), data);
   } catch (err) {
     alert(err);
   }

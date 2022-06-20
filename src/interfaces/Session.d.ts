@@ -1,10 +1,11 @@
-import { userUid } from "./User";
+import { UserForSession, userUid } from "./User";
 
 type sessionDate = string;
 type sessionPhone = string;
 type sessionAddress = string;
 
 export interface Session {
+  id: string;
   name: string;
   phone: sessionPhone;
   startDate: sessionDate;
@@ -12,6 +13,7 @@ export interface Session {
   ownerUid: userUid;
   address: sessionAddress;
   isAvailable?: boolean;
+  client?: UserForSession;
 }
 
 export interface SessionSchedue extends Session {

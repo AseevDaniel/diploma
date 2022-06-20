@@ -5,10 +5,14 @@ import { AuthContext } from "../../../../App";
 import { Nullable } from "../../../../interfaces/HelperInterfaces";
 import { RequestStatuses } from "../../../../interfaces/RequestStatus";
 import moment from "moment";
-import { createSession } from "../../../../services/sessionService";
+import {
+  createArraySession,
+  createSession,
+} from "../../../../services/sessionService";
 import { Loader } from "../../../../components/Loader/Loader";
 import { CustomDatePicker } from "../../../../components/CustomDatePicker";
 import { DATE_FORMATS } from "../../../../constants/date";
+import { getArrayOfSessions } from "../../../../helpers/sessionHelper";
 
 interface CreateScheduleProps {
   onCreate: () => void;
@@ -30,16 +34,20 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
   };
 
   const onSubmit: SubmitHandler<SessionSchedue> = async (data) => {
-    // setReqStatus(RequestStatuses.PENDING);
-    console.log(data);
-    // try {
-    //   await createSession({ ...data, isAvailable: true, ownerUid: user?.uid! });
-    //   setReqStatus(RequestStatuses.SUCCESS);
-    //   onCreate();
-    // } catch (err) {
-    //   alert(err);
-    //   setReqStatus(RequestStatuses.FAILED);
-    // }
+    setReqStatus(RequestStatuses.PENDING);
+    console.log(getArrayOfSessions(data));
+    try {
+      await createArraySession({
+        ...data,
+        isAvailable: true,
+        ownerUid: user?.uid!,
+      });
+      setReqStatus(RequestStatuses.SUCCESS);
+      onCreate();
+    } catch (err) {
+      alert(err);
+      setReqStatus(RequestStatuses.FAILED);
+    }
   };
 
   return (
@@ -123,7 +131,7 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
             <p>Start Date</p>
             <CustomDatePicker
               defaultValue={moment().format()}
-              dateFormat={DATE_FORMATS.DATE_FOR_SLOT}
+              dateFormat={DATE_FORMATS.DATE_FOR_SCHEDULE}
               onChange={() => {}}
               showTimeSelect={false}
               name="startDate"
@@ -136,7 +144,7 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
             <p>End Date</p>
             <CustomDatePicker
               defaultValue={moment().format()}
-              dateFormat={DATE_FORMATS.DATE_FOR_SLOT}
+              dateFormat={DATE_FORMATS.DATE_FOR_SCHEDULE}
               onChange={() => {}}
               showTimeSelect={false}
               name="endDate"

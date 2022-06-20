@@ -12,6 +12,7 @@ import { UserWithData } from "./interfaces/User";
 import { getUserData } from "./services/userService";
 import { useAuth } from "./hooks/useAuth";
 import { Nullable } from "./interfaces/HelperInterfaces";
+import { getArrayOfSessions } from "./helpers/sessionHelper";
 
 export const AuthContext = createContext<Nullable<UserWithData>>(null);
 

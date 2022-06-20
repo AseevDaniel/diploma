@@ -282,15 +282,20 @@
           font-weight: 400;
         }
       }
-      .bookButton{
-        will-change: auto;
+      .notAuth, .bookButton{
         position: absolute;
-        bottom: 0;
+        bottom: 15px;
         left: 50%;
         transform: translate(-50%, 1px);
+        color: $requiredColor;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .bookButton{
+        will-change: auto;
         padding: 4px 50px;
         border-radius: 100px 100px 0 0;
-        font-weight: 600;
+        bottom: 0;
         &.available{
           background: $lightGreen;
           color: $white;
@@ -305,6 +310,7 @@
           color: $disabledColor;
         }
       }
+
     }
   }
 

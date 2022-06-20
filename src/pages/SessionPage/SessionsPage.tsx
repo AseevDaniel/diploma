@@ -78,6 +78,7 @@ export const SessionsPage: React.FC = () => {
         sessions={sessions}
         currentDate={currentDate}
         setCurrentDate={setCurrentDate}
+        onDataUpdate={getSession}
       />
     </div>
   );

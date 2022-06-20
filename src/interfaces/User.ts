@@ -1,3 +1,5 @@
+import { Session } from "./Session";
+
 type email = string;
 type password = string;
 type name = string;
@@ -25,6 +27,14 @@ export interface UserWithData {
   name?: name;
   phone?: phone;
   address?: address;
+  sessionsCreated?: Session[];
+  sessionsAccepted?: Session[];
+}
+
+export interface UserForSession {
+  name: name;
+  phone: phone;
+  id?: string;
 }
 
 export interface UsersAll {
