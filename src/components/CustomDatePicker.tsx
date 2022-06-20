@@ -1,6 +1,6 @@
 import React from "react";
 import DatePicker, { ReactDatePickerProps } from "react-datepicker";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { Control, Controller } from "react-hook-form";
 import { Session, sessionDate } from "../interfaces/Session";
 import { DATE_FORMATS } from "../constants/date";
@@ -12,7 +12,7 @@ interface CustomDatePickerProps extends ReactDatePickerProps {
   name: SessionDates;
   control: Control<any>;
   onChangeData?: (value: Nullable<Date>) => void;
-  defaultValue?: string;
+  defaultValue?: Moment;
 }
 
 const TIME_INTERVAL = 15;

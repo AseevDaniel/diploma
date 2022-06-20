@@ -45,6 +45,9 @@ export const Sessions: React.FC<SessionsProps> = ({
 
   useEffect(() => {
     setCurrentSession(undefined);
+    setCurrentCalendarDay(
+      calendar.find((day) => moment(day.value).isSame(currentDate, "day"))
+    );
   }, [currentDate]);
 
   useEffect(() => {

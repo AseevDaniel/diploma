@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import { getUserData, writeUserData } from "../services/userService";
+import React, { useContext, useState } from "react";
+import { writeUserData } from "../services/userService";
 import { Loader } from "../components/Loader/Loader";
 import { useForm } from "react-hook-form";
 import { User, UserRoles, UserWithData } from "../interfaces/User";
@@ -8,6 +7,9 @@ import { Modal } from "../components/Modal/Modal";
 import { Form } from "../components/Auth/Form";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { AuthContext } from "../App";
+import { getSessionsByOwnersAndDay } from "../services/sessionService";
+import { Session } from "../interfaces/Session";
+import { TimeslotTags } from "./SessionPage/components/Sessions/components";
 
 interface ProfilePageProps {}
 
@@ -17,6 +19,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUserDataLoading, setIsUserDataLoading] = useState<boolean>(false);
   const [isCreatingLoading, setCreatingLoading] = useState<boolean>(false);
+  const [sessions, setSessions] = useState<Session[]>([]);
   const [isEditing, setIsEditing] = useState(false);
 
   const isAdmin = user?.role === UserRoles.ADMIN;
@@ -28,6 +31,19 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
         await writeUserData({ ...user, ...data });
         setIsUserDataLoading(false);
         setIsEditing(false);
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const getSessions = async () => {
+    try {
+      if (user?.uid && user.uid) {
+        setIsUserDataLoading(true);
+        const sessionsByuser = await getSessionsByOwnersAndDay([user.uid]);
+        setSessions(sessionsByuser);
+        setIsUserDataLoading(false);
       }
     } catch (err) {
       alert(err);
@@ -92,6 +108,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
         {isEditing ? "Cancel editing" : "Change info"}
       </button>
 
+      <button onClick={getSessions}>Get Sessions for today</button>
+
       {isUserDataLoading ? <Loader /> : getCurrentDataDisplay()}
 
       {isAdmin && (
@@ -109,6 +127,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
           )}
         </>
       )}
+
+      <div className="userSessions">
+        <TimeslotTags
+          timeslots={sessions}
+          isOnlyFreeSlots={false}
+          setIsOnlyFreeSlots={() => {}}
+        />
+      </div>
     </>
   );
 };

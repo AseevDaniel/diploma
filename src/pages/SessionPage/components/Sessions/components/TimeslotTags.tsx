@@ -2,10 +2,11 @@ import React from "react";
 import moment from "moment";
 import classNames from "classnames";
 import { Session } from "../../../../../interfaces/Session";
+import "./timeslotsTags.scss";
 
 interface TimeslotTagsProps {
   currentSession?: Session;
-  setCurrentSession: (timeslot: Session) => void;
+  setCurrentSession?: (timeslot: Session) => void;
   isOnlyFreeSlots: boolean;
   setIsOnlyFreeSlots: React.Dispatch<React.SetStateAction<boolean>>;
   timeslots?: Session[];
@@ -20,10 +21,8 @@ export const TimeslotTags: React.FC<TimeslotTagsProps> = ({
   currentSession,
   setCurrentSession,
   isDisabled,
-  tagsPerTimeslot,
-  isOnlyFreeSlots,
-  setIsOnlyFreeSlots,
 }) => {
+  console.log(timeslots);
   const filteredTimeslots = timeslots?.sort((a, b) =>
     moment(a.startDate).diff(moment(b.startDate))
   );
@@ -58,7 +57,7 @@ export const TimeslotTags: React.FC<TimeslotTagsProps> = ({
             return (
               <div
                 key={getTime(timeslot)}
-                onClick={() => setCurrentSession(timeslot)}
+                onClick={() => setCurrentSession?.(timeslot)}
                 className={getClassNames(
                   timeslot,
                   index,

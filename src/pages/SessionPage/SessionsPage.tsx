@@ -37,7 +37,10 @@ export const SessionsPage: React.FC = () => {
     setIsCreateSessionModalOpen(false);
   };
 
-  const onScheduleCreate = () => {};
+  const onScheduleCreate = () => {
+    getSession();
+    setIsCreateScheduleModalOpen(false);
+  };
 
   return (
     <div>
@@ -61,10 +64,11 @@ export const SessionsPage: React.FC = () => {
       {isUserCanManageSession(user) && (
         <>
           <button onClick={() => setIsCreateSessionModalOpen(true)}>
-            Create session
+            Create separate session
           </button>
+          <br />
           <button onClick={() => setIsCreateScheduleModalOpen(true)}>
-            Create schedile
+            Create schedule of sessions
           </button>
         </>
       )}

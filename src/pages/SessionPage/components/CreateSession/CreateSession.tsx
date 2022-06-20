@@ -1,17 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import React, { useContext, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Session } from "../../../../interfaces/Session";
 import { createSession } from "../../../../services/sessionService";
 import { Nullable } from "../../../../interfaces/HelperInterfaces";
 import { Loader } from "../../../../components/Loader/Loader";
 import { RequestStatuses } from "../../../../interfaces/RequestStatus";
-import { useAuth } from "../../../../hooks/useAuth";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import { CustomDatePicker } from "../../../../components/CustomDatePicker";
 import "./createSession.scss";
-import { getUserData, writeUserData } from "../../../../services/userService";
-import { UserWithData } from "../../../../interfaces/User";
+import { writeUserData } from "../../../../services/userService";
 import { AuthContext } from "../../../../App";
 
 interface CreateSessionProps {
@@ -25,12 +23,22 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
   } = useForm<Session>();
   const user = useContext(AuthContext);
   const [reqStatus, setReqStatus] = useState<Nullable<RequestStatuses>>(null);
 
   const onStartDateChange = (date: Nullable<Date>) => {
     if (date) setValue("endDate", moment(date).add(1, "hour").format());
+  };
+
+  const onEndDateChange = (date: Nullable<Date>) => {
+    const start = moment(getValues("startDate"));
+    console.log(start);
+    console.log(moment(date).isSame(start, "day"));
+    console.log(moment(date).isAfter(start));
+    if (!(moment(date).isSame(start, "day") && moment(date).isAfter(start)))
+      setValue("startDate", moment(date).subtract(1, "hour").format());
   };
 
   const onSubmit: SubmitHandler<Session> = async (data) => {
@@ -105,9 +113,11 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
           <div className="field">
             <p>End of session</p>
             <CustomDatePicker
+              defaultValue={moment().add(1, "hour")}
               onChange={() => {}}
               name="endDate"
               control={control}
+              onChangeData={onEndDateChange}
             />
             {errors.endDate && <span>This field is required</span>}
           </div>

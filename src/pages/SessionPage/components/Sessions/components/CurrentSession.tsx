@@ -107,14 +107,18 @@ export const CurrentSession: React.FC<CurrentSessionProps> = ({
         </div>
 
         {!!user ? (
-          <div
-            onClick={() => setIsConfirmModalOpen(true)}
-            className={`bookButton ${
-              isAvailable ? "available" : "unavailable"
-            }`}
-          >
-            {isAvailable ? "Book a session" : "Reserved"}
-          </div>
+          user.uid === session.ownerUid ? (
+            <div className="notAuth">It`s your session</div>
+          ) : (
+            <div
+              onClick={() => setIsConfirmModalOpen(true)}
+              className={`bookButton ${
+                isAvailable ? "available" : "unavailable"
+              }`}
+            >
+              {isAvailable ? "Book a session" : "Reserved"}
+            </div>
+          )
         ) : (
           <Link className="notAuth" to="/login">
             Log in to reserve

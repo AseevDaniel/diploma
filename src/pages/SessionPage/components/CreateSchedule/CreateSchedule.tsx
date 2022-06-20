@@ -130,7 +130,7 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
           <div className="field">
             <p>Start Date</p>
             <CustomDatePicker
-              defaultValue={moment().format()}
+              defaultValue={moment()}
               dateFormat={DATE_FORMATS.DATE_FOR_SCHEDULE}
               onChange={() => {}}
               showTimeSelect={false}
@@ -143,7 +143,7 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
           <div className="field">
             <p>End Date</p>
             <CustomDatePicker
-              defaultValue={moment().format()}
+              defaultValue={moment().add(1, "day")}
               dateFormat={DATE_FORMATS.DATE_FOR_SCHEDULE}
               onChange={() => {}}
               showTimeSelect={false}

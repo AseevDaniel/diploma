@@ -5,12 +5,10 @@ import {
   getFirestore,
   addDoc,
   updateDoc,
-  writeBatch,
 } from "firebase/firestore";
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { app } from "firebase";
 import { Session } from "../interfaces/Session";
-import firebase from "firebase/compat";
 const db = getFirestore(app);
 const database = getDatabase(app);
 

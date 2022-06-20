@@ -7,6 +7,7 @@ import {
 import { Session, SessionSchedue } from "../interfaces/Session";
 import { convertDateToDefaultFormat } from "../helpers/dateHelpers";
 import { getArrayOfSessions } from "../helpers/sessionHelper";
+import moment from "moment";
 
 const COLLECTION_NAME = "sessions";
 
@@ -45,6 +46,19 @@ export const getSessionsByOwners = async (
 
   const filteredSessions = sessions.filter(
     (session) => session.ownerUid && ownerUids.includes(session.ownerUid)
+  );
+
+  return filteredSessions;
+};
+
+export const getSessionsByOwnersAndDay = async (
+  ownerUids: string[],
+  day = moment()
+): Promise<Session[]> => {
+  const sessions = await getSessionsByOwners(ownerUids);
+
+  const filteredSessions = sessions.filter((session) =>
+    moment(session.startDate).isSame(day, "day")
   );
 
   return filteredSessions;
