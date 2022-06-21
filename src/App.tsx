@@ -29,14 +29,10 @@ function App() {
 
       <div className="content">
         <Switch>
-          <PrivateRoute exact path="/" component={HomePage}></PrivateRoute>
-          <PrivateRoute
-            exact
-            path="/profile"
-            component={ProfilePage}
-          ></PrivateRoute>
+          <PrivateRoute exact path="/" component={HomePage} />
+          <PrivateRoute exact path="/profile" component={ProfilePage} />
 
-          <Route exact path="/sessions" component={SessionsPage}></Route>
+          <Route exact path="/sessions" component={SessionsPage} />
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
         </Switch>
