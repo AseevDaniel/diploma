@@ -9,10 +9,10 @@ import { convertDateToDefaultFormat } from "../helpers/dateHelpers";
 import { getArrayOfSessions } from "../helpers/sessionHelper";
 import moment from "moment";
 
-const COLLECTION_NAME = "sessions";
+const SESSION_PATH = "sessions";
 
 export const getSessions = async (): Promise<Session[]> => {
-  const sessionsSnapshot = await getData(COLLECTION_NAME);
+  const sessionsSnapshot = await getData(SESSION_PATH);
   const sessions: Session[] = [];
 
   sessionsSnapshot.forEach((el) => {
@@ -23,7 +23,7 @@ export const getSessions = async (): Promise<Session[]> => {
 };
 
 export const createSession = (data: Session) => {
-  return postData(COLLECTION_NAME, {
+  return postData(SESSION_PATH, {
     ...data,
     startDate: convertDateToDefaultFormat(data.startDate),
     endDate: convertDateToDefaultFormat(data.endDate),
@@ -31,11 +31,11 @@ export const createSession = (data: Session) => {
 };
 
 export const createArraySession = (dataArray: SessionSchedue) => {
-  return postArrayData(COLLECTION_NAME, getArrayOfSessions(dataArray));
+  return postArrayData(SESSION_PATH, getArrayOfSessions(dataArray));
 };
 
 export const updateSession = (sessionId: string, data: Session) => {
-  return updateData(COLLECTION_NAME, sessionId, data);
+  return updateData(SESSION_PATH, sessionId, data);
 };
 
 export const getSessionsByOwners = async (

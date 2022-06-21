@@ -1,12 +1,12 @@
 import { UserRoles, UsersAll, UserWithData } from "../interfaces/User";
-import { getDatabaseData, writeDatabseData } from "./firebaseDataService";
+import { getDatabaseData, writeDatabaseData } from "./firebaseDataService";
 import { SelectOption } from "../interfaces/Select";
 
 const USER_PATH = "users/";
 const DEFAULT_USERNAME = "Unknown";
 
 export const writeUserData = async (user: UserWithData) => {
-  return await writeDatabseData(USER_PATH, user.uid, user);
+  return await writeDatabaseData(USER_PATH, user.uid, user);
 };
 
 export const getUserData = (

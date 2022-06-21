@@ -23,7 +23,6 @@ export const getData = async (collectionName: string) => {
 };
 
 export const postData = async <T>(collectionName: string, data: T) => {
-  console.log(data);
   try {
     await addDoc(collection(db, collectionName), data);
   } catch (err) {
@@ -50,8 +49,6 @@ export const updateData = async <T>(
   documentId: string,
   data: T
 ) => {
-  console.log(data);
-
   try {
     await updateDoc(doc(db, collectionName, documentId), data);
   } catch (err) {
@@ -59,10 +56,8 @@ export const updateData = async <T>(
   }
 };
 
-export const writeDatabseData = <T>(path: string, uid: string, data: T) => {
-  const a = set(ref(database, path + uid), data)
-    .then((res) => console.log(res))
-    .catch((err) => console.log(err));
+export const writeDatabaseData = <T>(path: string, uid: string, data: T) => {
+  const a = set(ref(database, path + uid), data).catch((err) => alert(err));
 
   return a;
 };
@@ -73,6 +68,7 @@ export const getDatabaseData = (
   onGet?: (data: any) => void
 ) => {
   const dataRef = ref(database, path + uid);
+
   onValue(dataRef, (snapshot) => {
     const data = snapshot.val();
     onGet?.(data);
