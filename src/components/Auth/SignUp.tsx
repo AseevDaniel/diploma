@@ -30,7 +30,7 @@ const SignUp: React.FC = () => {
           role: "default",
         });
 
-        push("/");
+        push("/profile");
       })
       .catch(console.error);
   };

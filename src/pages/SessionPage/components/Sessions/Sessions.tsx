@@ -13,7 +13,7 @@ import {
   WeekDays,
 } from "./components";
 import { Session } from "../../../../interfaces/Session";
-import { CurrentSession } from "./components/CurrentSession";
+import { CurrentSession } from "./components/CurrentSession/CurrentSession";
 
 interface SessionsProps {
   sessions: Session[];

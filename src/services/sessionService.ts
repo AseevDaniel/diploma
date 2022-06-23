@@ -23,15 +23,11 @@ export const getSessions = async (): Promise<Session[]> => {
 };
 
 export const createSession = (data: Session) => {
-  return postData(SESSION_PATH, {
-    ...data,
-    startDate: convertDateToDefaultFormat(data.startDate),
-    endDate: convertDateToDefaultFormat(data.endDate),
-  });
+  return postData(SESSION_PATH, data);
 };
 
-export const createArraySession = (dataArray: SessionSchedue) => {
-  return postArrayData(SESSION_PATH, getArrayOfSessions(dataArray));
+export const createArraySession = (sessionsArray: Session[]) => {
+  return postArrayData(SESSION_PATH, sessionsArray);
 };
 
 export const updateSession = (sessionId: string, data: Session) => {

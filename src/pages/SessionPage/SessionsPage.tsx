@@ -10,9 +10,11 @@ import { SelectOption } from "../../interfaces/Select";
 import { AuthContext } from "../../App";
 import { isUserCanManageSession } from "../../helpers/userHelpers";
 import { CreateSchedule } from "./components/CreateSchedule/CreateSchedule";
+import { Loader } from "../../components/Loader/Loader";
 
 export const SessionsPage: React.FC = () => {
   const user = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [currentDate, setCurrentDate] = useState<Moment>(moment());
   const [selectedOwners, setSelectedOwners] = useState<SelectOption[]>([]);
@@ -22,10 +24,11 @@ export const SessionsPage: React.FC = () => {
     useState(false);
 
   const getSession = async () => {
+    setIsLoading(true);
     const formattedOwners = selectedOwners.map(({ value }) => value);
     const data = await getSessionsByOwners(formattedOwners);
-    console.log(data);
     setSessions(data);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -78,12 +81,16 @@ export const SessionsPage: React.FC = () => {
         setSelectedUsers={setSelectedOwners}
       />
 
-      <Sessions
-        sessions={sessions}
-        currentDate={currentDate}
-        setCurrentDate={setCurrentDate}
-        onDataUpdate={getSession}
-      />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Sessions
+          sessions={sessions}
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
+          onDataUpdate={getSession}
+        />
+      )}
     </div>
   );
 };

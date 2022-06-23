@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 import classNames from "classnames";
-import { Session } from "../../../../../interfaces/Session";
+import { Session } from "../../../../../../interfaces/Session";
 import "./timeslotsTags.scss";
 
 interface TimeslotTagsProps {

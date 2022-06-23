@@ -1,29 +1,32 @@
 import React, { useContext, useState } from "react";
-import { Session } from "../../../../../interfaces/Session";
+import { Session } from "../../../../../../interfaces/Session";
 import moment from "moment";
-import { DATE_FORMATS } from "../../../../../constants/date";
-import { convertDateToDefaultFormat } from "../../../../../helpers/dateHelpers";
+import { DATE_FORMATS } from "../../../../../../constants/date";
+import { convertDateToDefaultFormat } from "../../../../../../helpers/dateHelpers";
 import {
   ADDRESS_IMAGE,
   PHONE_IMAGE,
   PROFILE_IMAGE,
-} from "../../../../../constants/images";
-import { AuthContext } from "../../../../../App";
-import { ConfirmModal } from "../../../../../components/Modal/ConfirmModal";
-import { writeUserData } from "../../../../../services/userService";
-import { Loader } from "../../../../../components/Loader/Loader";
-import { updateSession } from "../../../../../services/sessionService";
+} from "../../../../../../constants/images";
+import { AuthContext } from "../../../../../../App";
+import { ConfirmModal } from "../../../../../../components/Modal/ConfirmModal";
+import { writeUserData } from "../../../../../../services/userService";
+import { Loader } from "../../../../../../components/Loader/Loader";
+import { updateSession } from "../../../../../../services/sessionService";
 import { Link } from "react-router-dom";
-import { UserForSession } from "../../../../../interfaces/User";
+import { UserForSession } from "../../../../../../interfaces/User";
+import "./currentSession.scss";
 
 interface CurrentSessionProps {
   session: Session;
   onReserve?: () => void;
+  isWithoutBooking?: boolean;
 }
 
 export const CurrentSession: React.FC<CurrentSessionProps> = ({
   session,
   onReserve,
+  isWithoutBooking = false,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -37,6 +40,12 @@ export const CurrentSession: React.FC<CurrentSessionProps> = ({
   } = session;
   const user = useContext(AuthContext);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const checkUserData = () => {
+    user?.phone
+      ? setIsConfirmModalOpen(true)
+      : alert("Firstly enter phone number in your profile");
+  };
 
   const reserveSession = async () => {
     console.log(user);
@@ -65,6 +74,29 @@ export const CurrentSession: React.FC<CurrentSessionProps> = ({
       isAvailable: false,
       client,
     });
+  };
+
+  const getBookingButton = () => {
+    if (isWithoutBooking) return <></>;
+
+    if (!user)
+      return (
+        <Link className="notAuth" to="/login">
+          Log in to reserve
+        </Link>
+      );
+
+    if (user.uid === session.ownerUid)
+      return <div className="notAuth">It`s your session</div>;
+
+    return (
+      <div
+        onClick={checkUserData}
+        className={`bookButton ${isAvailable ? "available" : "unavailable"}`}
+      >
+        {isAvailable ? "Book a session" : "Reserved"}
+      </div>
+    );
   };
 
   if (isLoading) return <Loader />;
@@ -106,24 +138,7 @@ export const CurrentSession: React.FC<CurrentSessionProps> = ({
           </h1>
         </div>
 
-        {!!user ? (
-          user.uid === session.ownerUid ? (
-            <div className="notAuth">It`s your session</div>
-          ) : (
-            <div
-              onClick={() => setIsConfirmModalOpen(true)}
-              className={`bookButton ${
-                isAvailable ? "available" : "unavailable"
-              }`}
-            >
-              {isAvailable ? "Book a session" : "Reserved"}
-            </div>
-          )
-        ) : (
-          <Link className="notAuth" to="/login">
-            Log in to reserve
-          </Link>
-        )}
+        {getBookingButton()}
       </div>
 
       {isConfirmModalOpen && (

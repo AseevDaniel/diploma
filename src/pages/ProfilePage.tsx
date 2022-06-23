@@ -10,19 +10,35 @@ import { AuthContext } from "../App";
 import { getSessionsByOwnersAndDay } from "../services/sessionService";
 import { Session } from "../interfaces/Session";
 import { TimeslotTags } from "./SessionPage/components/Sessions/components";
+import { CurrentSession } from "./SessionPage/components/Sessions/components/CurrentSession/CurrentSession";
+import moment from "moment";
+import { getSessionsForToday } from "../helpers/sessionHelper";
+import { REG_EXP } from "../constants/RegExps";
 
 interface ProfilePageProps {}
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
-  const { register, handleSubmit } = useForm<UserWithData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserWithData>();
   const user = useContext(AuthContext);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUserDataLoading, setIsUserDataLoading] = useState<boolean>(false);
   const [isCreatingLoading, setCreatingLoading] = useState<boolean>(false);
-  const [sessions, setSessions] = useState<Session[]>([]);
+  const [isSessionsForTodayShown, setIsSessionsForTodayShown] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [currentSession, setCurrentSession] = useState<Session>();
 
   const isAdmin = user?.role === UserRoles.ADMIN;
+  const isStore = user?.role === UserRoles.STORE;
+
+  const currentSessions = isStore
+    ? user?.sessionsCreated?.filter((session) => !session.isAvailable)
+    : user?.sessionsAccepted;
+
+  console.log(user);
 
   const onSubmit = async (data: UserWithData) => {
     try {
@@ -31,19 +47,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
         await writeUserData({ ...user, ...data });
         setIsUserDataLoading(false);
         setIsEditing(false);
-      }
-    } catch (err) {
-      alert(err);
-    }
-  };
-
-  const getSessions = async () => {
-    try {
-      if (user?.uid && user.uid) {
-        setIsUserDataLoading(true);
-        const sessionsByuser = await getSessionsByOwnersAndDay([user.uid]);
-        setSessions(sessionsByuser);
-        setIsUserDataLoading(false);
       }
     } catch (err) {
       alert(err);
@@ -83,7 +86,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
         </div>
         <div className="field">
           <p>Phone:</p>
-          <input {...register("phone")} defaultValue={user.phone} />
+          <input
+            {...register("phone", {
+              pattern: {
+                value: REG_EXP.phone,
+                message: "Invalid phone number",
+              },
+            })}
+            defaultValue={user.phone}
+          />
+          <span>{errors.phone?.message}</span>
         </div>
         <div className="field">
           <p>Address:</p>
@@ -108,8 +120,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
         {isEditing ? "Cancel editing" : "Change info"}
       </button>
 
-      <button onClick={getSessions}>Get Sessions for today</button>
-
       {isUserDataLoading ? <Loader /> : getCurrentDataDisplay()}
 
       {isAdmin && (
@@ -128,13 +138,36 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({}) => {
         </>
       )}
 
-      <div className="userSessions">
-        <TimeslotTags
-          timeslots={sessions}
-          isOnlyFreeSlots={false}
-          setIsOnlyFreeSlots={() => {}}
-        />
-      </div>
+      <button
+        onClick={() => setIsSessionsForTodayShown(!isSessionsForTodayShown)}
+      >
+        {isSessionsForTodayShown ? "Hide sessions" : "Show Sessions for today"}
+      </button>
+
+      {isSessionsForTodayShown && (
+        <>
+          {getSessionsForToday(currentSessions)?.length > 0 ? (
+            <>
+              <div className="userSessions">
+                Sessions for today:
+                <TimeslotTags
+                  timeslots={getSessionsForToday(currentSessions)}
+                  isOnlyFreeSlots={false}
+                  currentSession={currentSession}
+                  setCurrentSession={setCurrentSession}
+                  setIsOnlyFreeSlots={() => {}}
+                />
+              </div>
+
+              {currentSession && (
+                <CurrentSession isWithoutBooking session={currentSession} />
+              )}
+            </>
+          ) : (
+            <>You have not sessions for today</>
+          )}
+        </>
+      )}
     </>
   );
 };

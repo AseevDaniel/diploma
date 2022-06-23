@@ -11,6 +11,8 @@ import { CustomDatePicker } from "../../../../components/CustomDatePicker";
 import "./createSession.scss";
 import { writeUserData } from "../../../../services/userService";
 import { AuthContext } from "../../../../App";
+import { REG_EXP } from "../../../../constants/RegExps";
+import { convertDateToDefaultFormat } from "../../../../helpers/dateHelpers";
 
 interface CreateSessionProps {
   onCreate: () => void;
@@ -34,20 +36,19 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
 
   const onEndDateChange = (date: Nullable<Date>) => {
     const start = moment(getValues("startDate"));
-    console.log(start);
-    console.log(moment(date).isSame(start, "day"));
-    console.log(moment(date).isAfter(start));
+
     if (!(moment(date).isSame(start, "day") && moment(date).isAfter(start)))
       setValue("startDate", moment(date).subtract(1, "hour").format());
   };
 
   const onSubmit: SubmitHandler<Session> = async (data) => {
-    setReqStatus(RequestStatuses.PENDING);
     if (user) {
-      console.log(data);
+      setReqStatus(RequestStatuses.PENDING);
       try {
         const sessionData = {
           ...data,
+          startDate: convertDateToDefaultFormat(data.startDate),
+          endDate: convertDateToDefaultFormat(data.endDate),
           isAvailable: true,
           ownerUid: user?.uid!,
         };
@@ -57,10 +58,10 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
           sessionsCreated: [...(user?.sessionsCreated || []), sessionData],
         });
         setReqStatus(RequestStatuses.SUCCESS);
-        onCreate();
       } catch (err) {
-        alert(err);
         setReqStatus(RequestStatuses.FAILED);
+      } finally {
+        onCreate();
       }
     }
   };
@@ -85,9 +86,18 @@ export const CreateSession: React.FC<CreateSessionProps> = ({ onCreate }) => {
             <p>Phone</p>
             <input
               defaultValue={user?.phone}
-              {...register("phone", { required: true })}
+              {...register("phone", {
+                required: {
+                  value: true,
+                  message: "This field is required",
+                },
+                pattern: {
+                  value: REG_EXP.phone,
+                  message: "Invalid phone number",
+                },
+              })}
             />
-            {errors.phone && <span>This field is required</span>}
+            <span>{errors.phone?.message}</span>
           </div>
 
           <div className="field">

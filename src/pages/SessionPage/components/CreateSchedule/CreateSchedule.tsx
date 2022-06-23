@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { ChangeEvent, useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Session, SessionSchedue } from "../../../../interfaces/Session";
 import { AuthContext } from "../../../../App";
@@ -12,7 +12,12 @@ import {
 import { Loader } from "../../../../components/Loader/Loader";
 import { CustomDatePicker } from "../../../../components/CustomDatePicker";
 import { DATE_FORMATS } from "../../../../constants/date";
-import { getArrayOfSessions } from "../../../../helpers/sessionHelper";
+import {
+  getArrayOfSessions,
+  getMinutesInTime,
+  getTimeInMinutes,
+} from "../../../../helpers/sessionHelper";
+import { writeUserData } from "../../../../services/userService";
 
 interface CreateScheduleProps {
   onCreate: () => void;
@@ -25,6 +30,7 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
   } = useForm<SessionSchedue>();
   const user = useContext(AuthContext);
   const [reqStatus, setReqStatus] = useState<Nullable<RequestStatuses>>(null);
@@ -33,20 +39,56 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
     if (date) setValue("endDate", moment(date).add(1, "day").format());
   };
 
+  const onEndDateChange = (date: Nullable<Date>) => {
+    const start = moment(getValues("startDate"));
+
+    if (!(moment(date).isAfter(start) || moment(date).isSame(start, "day")))
+      setValue("startDate", moment(date).subtract(1, "day").format());
+  };
+
+  const onStartTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const start = event.target.value;
+    const end = getValues("endTime");
+
+    if (getTimeInMinutes(start) >= getTimeInMinutes(end)) {
+      setValue("endTime", getMinutesInTime(getTimeInMinutes(start) + 60));
+    }
+  };
+
+  const oneEndTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const end = event.target.value;
+    const start = getValues("startTime");
+
+    if (getTimeInMinutes(start) >= getTimeInMinutes(end)) {
+      setValue("startTime", getMinutesInTime(getTimeInMinutes(end) - 60));
+    }
+  };
+
   const onSubmit: SubmitHandler<SessionSchedue> = async (data) => {
-    setReqStatus(RequestStatuses.PENDING);
-    console.log(getArrayOfSessions(data));
-    try {
-      await createArraySession({
-        ...data,
-        isAvailable: true,
-        ownerUid: user?.uid!,
-      });
-      setReqStatus(RequestStatuses.SUCCESS);
-      onCreate();
-    } catch (err) {
-      alert(err);
-      setReqStatus(RequestStatuses.FAILED);
+    if (user) {
+      setReqStatus(RequestStatuses.PENDING);
+      try {
+        const sessionSchedule = {
+          ...data,
+          isAvailable: true,
+          ownerUid: user?.uid!,
+        };
+        const arrayOfSessions = getArrayOfSessions(sessionSchedule);
+
+        await createArraySession(arrayOfSessions);
+        await writeUserData({
+          ...user,
+          sessionsCreated: [
+            ...(user?.sessionsCreated || []),
+            ...arrayOfSessions,
+          ],
+        });
+        setReqStatus(RequestStatuses.SUCCESS);
+        onCreate();
+      } catch (err) {
+        alert(err);
+        setReqStatus(RequestStatuses.FAILED);
+      }
     }
   };
 
@@ -90,6 +132,7 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
               type="time"
               defaultValue={"10:00"}
               {...register("startTime", { required: true })}
+              onChange={onStartTimeChange}
             />
             {errors.startTime && <span>This field is required</span>}
           </div>
@@ -100,6 +143,7 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
               type="time"
               defaultValue={"18:00"}
               {...register("endTime", { required: true })}
+              onChange={oneEndTimeChange}
             />
             {errors.endTime && <span>This field is required</span>}
           </div>
@@ -120,7 +164,7 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
                 },
                 max: {
                   value: 180,
-                  message: "Mac value - 180 minutes",
+                  message: "Max value - 180 minutes",
                 },
               })}
             />
@@ -149,6 +193,7 @@ export const CreateSchedule: React.FC<CreateScheduleProps> = ({ onCreate }) => {
               showTimeSelect={false}
               name="endDate"
               control={control}
+              onChangeData={onEndDateChange}
             />
             {errors.endDate && <span>This field is required</span>}
           </div>
